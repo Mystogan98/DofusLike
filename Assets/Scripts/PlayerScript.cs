@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour {
 
+	[HideInInspector]
 	public static PlayerScript instance;
 
 	private CellScript selectedCell;
@@ -14,7 +15,7 @@ public class PlayerScript : MonoBehaviour {
 		if(instance == null)
 			instance = this;
 		else
-			Destroy(this.gameObject);
+			Destroy(this);
 	}
 
 	public void SelectCell(CellScript cell)
@@ -91,10 +92,11 @@ public class PlayerScript : MonoBehaviour {
 	}
 
 	private void Unselect(bool played){
-		if (played && selectedCell.target != null)
-			selectedCell.target.canPlay = false;
+		// if (played && selectedCell.target != null)
+		// 	selectedCell.target.canPlay = false;
 		selectedCell.Unselect();
 		selectedCell = null;
+		CellManager.ResetGrid(ResetMode.normal);
 	}
 
 	private void Select(CellScript cell)
@@ -103,7 +105,15 @@ public class PlayerScript : MonoBehaviour {
 		{
 			selectedCell = cell;
 			cell.Select();
+
+			CellManager.ShowMoveRange(selectedCell);
 		}
+	}
+
+	private void SelectSpell(SpellScript spell)
+	{
+		activeSpell = spell;
+		CellManager.ShowSpellRange(selectedCell,spell);
 	}
 }
 

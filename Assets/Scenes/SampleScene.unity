@@ -1860,7 +1860,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f2638cc203d7d746abcebab47801c69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alwaysPlayable: 1
   type: 2
+  moveRange: 3
 --- !u!4 &669751902 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4150225634758724, guid: 7eb9cd0143aa1024ea5a01b5524b621f,
@@ -3873,12 +3875,12 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1472087995}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5bdd3880b813f52468600f5403da1bed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debug: 1
+  debug: 0
   nbX: 9
   nbY: 9
   sizeX: 1

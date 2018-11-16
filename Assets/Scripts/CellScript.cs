@@ -2,15 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class CellScript : MonoBehaviour {
 
 	public TargetScript target;
+	public int x, y;
 
-	private bool _selected, _over, hasChanged;
-	private bool selected { set { _selected = value; hasChanged = true; } get { return _selected; } }
-	private bool over { set { _over = value; hasChanged = true; } get { return _over; } }
+	private bool _selected, _over, _isInPath, _isInMoveRange, _isInSpellRange, hasChanged;
+	public bool selected { set { _selected = value; hasChanged = true; } get { return _selected; } }
+	public bool over { set { _over = value; hasChanged = true; } get { return _over; } }
+	public bool isInPath { set { _isInPath = value; hasChanged = true; } get { return _isInPath; } }
+	public bool isInMoveRange { set { _isInMoveRange = value; hasChanged = true; } get { return _isInMoveRange; } }
+	public bool isInSpellRange { set { _isInSpellRange = value; hasChanged = true; } get { return _isInSpellRange; } }
+
+	private new SpriteRenderer renderer;
 
 	private void Start() {
+		renderer = GetComponent<SpriteRenderer>();
 		try{
 			if(target == null)
 				target = transform.GetChild(0).gameObject.GetComponent<TargetScript>();
@@ -24,20 +32,29 @@ public class CellScript : MonoBehaviour {
 		if(hasChanged)
 		{
 			if(selected)
-				((SpriteRenderer) GetComponent<Renderer>()).color = Color.red;
+				renderer.color = Color.red;
 			else if (over)
-				((SpriteRenderer) GetComponent<Renderer>()).color = Color.blue;
+				renderer.color = Color.blue;
+			else if (isInPath)
+				renderer.color = Color.green;
+			else if (isInMoveRange)
+				renderer.color = Color.green;  //new Color(120,255,120);
+			else if (isInSpellRange)
+				renderer.color = new Color(255,120,120);
 			else
-				((SpriteRenderer) GetComponent<Renderer>()).color = Color.white;
+				renderer.color = Color.white;
 			hasChanged = false;
 		}
 	}
 
 	private void OnMouseEnter() {
+		if(isInMoveRange)
+			CellManager.ShowPath(this);
 		over = true;
 	}
 
 	private void OnMouseExit() {
+		CellManager.ResetGrid(ResetMode.soft);
 		over = false;
 	}
 
@@ -53,5 +70,10 @@ public class CellScript : MonoBehaviour {
 	public void Unselect()
 	{
 		selected = false;
+	}
+
+	public int Distance(CellScript target)
+	{
+		return Mathf.Abs(x - target.x) + Mathf.Abs(y - target.y);
 	}
 }

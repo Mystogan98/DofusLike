@@ -34,7 +34,10 @@ public class GridScript : MonoBehaviour {
 			else
 			{
 				child.transform.position = new Vector3(-globalOffsetX + ix * (sizeX + offsetX), globalOffsetY - iy * (sizeY + offsetY), 0);
-				child.transform.rotation *= transform.rotation;		// a * on Quaternions is a + on angles
+				//child.transform.rotation *= transform.rotation;		// a * on Quaternions is a + on angles 	DO NOT WORK
+
+				CellManager.AddCell(child.gameObject.GetComponent<CellScript>(), ix, iy);
+
 				ix++;
 				if(ix >= nbX)
 				{

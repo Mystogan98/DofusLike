@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class CharacterScript : TargetScript {
 
+	[Header("Debug variables")]
+	public bool alwaysPlayable = false;
+	[Space(20)]
+
 	// TODO : See if you can hide "obstacle"
 	public new Type type;
+	public int moveRange = 3;
 
 	private SpellScript spell; 	// I don't know how many yet
 	private CellScript parent;
@@ -16,14 +21,18 @@ public class CharacterScript : TargetScript {
 
 	public void Move(CellScript target)
 	{
-		Debug.Log("Move");
-		// remove from parent
-		parent.target = null;
-		// move to target
-		target.target = this;
-		transform.SetParent(target.transform,false);
-		UpdateParent();
-		canPlay = false;
+		if(target.isInMoveRange)
+		{
+			// remove from parent
+			parent.target = null;
+			// move to target
+			target.target = this;
+			transform.SetParent(target.transform,false);
+			UpdateParent();
+			if(!alwaysPlayable)
+				canPlay = false;
+			CellManager.ResetGrid(ResetMode.normal);
+		}
 	}
 
 	private void LateUpdate() {
