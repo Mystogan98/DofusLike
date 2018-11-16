@@ -6,7 +6,7 @@ public class PlayerScript : MonoBehaviour {
 
 	public static PlayerScript instance;
 
-	private CellScript selectedCell, aimedCell;
+	private CellScript selectedCell;
 	private SpellScript activeSpell;
 
 	// Use this for initialization
@@ -15,11 +15,6 @@ public class PlayerScript : MonoBehaviour {
 			instance = this;
 		else
 			Destroy(this.gameObject);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 
 	public void SelectCell(CellScript cell)
