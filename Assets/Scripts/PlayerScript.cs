@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour {
 
-	private static PlayerScript instance;
+	public static PlayerScript instance;
 
 	private CellScript selectedCell, aimedCell;
 	private SpellScript activeSpell;
@@ -22,7 +22,7 @@ public class PlayerScript : MonoBehaviour {
 		
 	}
 
-	public static void SelectCell(CellScript cell)
+	public void SelectCell(CellScript cell)
 	{
 		// TargetScript (abstract)
 		// |-> Character
@@ -48,30 +48,30 @@ public class PlayerScript : MonoBehaviour {
 		// when "unselect" => set character to "done"
 
 		
-		if(instance.selectedCell == null && cell.target != null)
+		if(selectedCell == null && cell.target != null && cell.target.canPlay)
 		{
 			Select(cell);
-		} else if (instance.selectedCell != null)
+		} else if (selectedCell != null)
 		{
 			if(cell.target == null)
 			{
-				CharacterScript target = (CharacterScript) cell.target;
-				if (instance.activeSpell == null && target.InMoveRange(cell))
+				CharacterScript target = (CharacterScript) selectedCell.target;
+				if (activeSpell == null && target.InMoveRange(cell))
 				{
 					target.Move(cell);
 					Unselect(true);
-				} else if (instance.activeSpell != null && instance.activeSpell.onEmpty && instance.activeSpell.IsInRange(cell))
+				} else if (activeSpell != null && activeSpell.onEmpty && activeSpell.IsInRange(cell))
 				{
-					instance.activeSpell.launch(cell);
+					activeSpell.launch(cell);
 					Unselect(true);
 				} else {
 					Unselect(false);
 				}
 			} else if (cell.target.GetTypeOfTarget() == Type.ally)
 			{
-				if (instance.activeSpell != null && instance.activeSpell.onAlly && instance.activeSpell.IsInRange(cell))
+				if (activeSpell != null && activeSpell.onAlly && activeSpell.IsInRange(cell))
 				{
-					instance.activeSpell.launch(cell);
+					activeSpell.launch(cell);
 					Unselect(true);
 				} else {
 					Unselect(false);
@@ -79,35 +79,53 @@ public class PlayerScript : MonoBehaviour {
 				}
 			} else if (cell.target.GetTypeOfTarget() == Type.ennemy)
 			{
-				if (instance.activeSpell != null && instance.activeSpell.onEnnemy && instance.activeSpell.IsInRange(cell))
+				if (activeSpell != null && activeSpell.onEnnemy && activeSpell.IsInRange(cell))
 				{
-					instance.activeSpell.launch(cell);
+					activeSpell.launch(cell);
 					Unselect(true);
 				}
 			} else if (cell.target.GetTypeOfTarget() == Type.obstacle)
 			{
-				if (instance.activeSpell != null && instance.activeSpell.onObstacle && instance.activeSpell.IsInRange(cell))
+				if (activeSpell != null && activeSpell.onObstacle && activeSpell.IsInRange(cell))
 				{
-					instance.activeSpell.launch(cell);
+					activeSpell.launch(cell);
 					Unselect(true);
 				}
 			}
 		}
 	}
 
-	private static void Unselect(bool played){
-		if (played)
-			instance.selectedCell.target.canPlay = false;
-		instance.selectedCell.Unselect();
-		instance.selectedCell = null;
+	private void Unselect(bool played){
+		if (played && selectedCell.target != null)
+			selectedCell.target.canPlay = false;
+		selectedCell.Unselect();
+		selectedCell = null;
 	}
 
-	private static void Select(CellScript cell)
+	private void Select(CellScript cell)
 	{
 		if(cell.target.canPlay)
 		{
-			instance.selectedCell = cell;
+			selectedCell = cell;
 			cell.Select();
 		}
 	}
 }
+
+
+
+
+// DISJKTRA
+// Stack case retenus
+// liste case non utile
+// case de depart
+// case d'arrivé
+// case = {x + y} ; valeur = x+y ; distance = |valeur_depart - valeur_arrivé|
+
+// On part de la case de départ en direction de la case d'arrivé
+// on met la première case dans la stack, puis on prend la case suivante
+// Si la case ne mene a rien, on reviens en arrière dans la stack et on met cette case dans la liste
+// si case pas dans la liste, alors on met dans la stack et on continue
+
+// si distance > portée FALSE
+// TRUE

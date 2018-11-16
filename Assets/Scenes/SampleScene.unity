@@ -1782,6 +1782,7 @@ GameObject:
   m_Component:
   - component: {fileID: 651604373}
   - component: {fileID: 651604374}
+  - component: {fileID: 651604375}
   m_Layer: 0
   m_Name: Left - Idle_000
   m_TagString: Untagged
@@ -1848,6 +1849,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
+--- !u!114 &651604375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 651604372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f2638cc203d7d746abcebab47801c69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
 --- !u!4 &669751902 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4150225634758724, guid: 7eb9cd0143aa1024ea5a01b5524b621f,
@@ -3572,6 +3585,11 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114916212753371524, guid: 7eb9cd0143aa1024ea5a01b5524b621f,
+        type: 2}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 651604375}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7eb9cd0143aa1024ea5a01b5524b621f, type: 2}
   m_IsPrefabAsset: 0
@@ -3855,7 +3873,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1472087995}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5bdd3880b813f52468600f5403da1bed, type: 3}
   m_Name: 

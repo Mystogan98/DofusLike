@@ -10,6 +10,15 @@ public class CellScript : MonoBehaviour {
 	private bool _selected, _over, hasChanged;
 	private bool selected { set { _selected = value; hasChanged = true; } get { return _selected; } }
 	private bool over { set { _over = value; hasChanged = true; } get { return _over; } }
+
+	private void Start() {
+		try{
+			if(target == null)
+				target = transform.GetChild(0).gameObject.GetComponent<TargetScript>();
+		} catch {
+			// Ignore the error as it's just quality of life for me, not a need for the game
+		}
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -34,7 +43,7 @@ public class CellScript : MonoBehaviour {
 	}
 
 	private void OnMouseUp() {
-		PlayerScript.SelectCell(this);
+		PlayerScript.instance.SelectCell(this);
 	}
 
 	public void Select()
