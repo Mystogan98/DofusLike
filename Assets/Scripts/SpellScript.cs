@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class SpellScript {
 	public bool onEmpty, onAlly, onEnnemy, onObstacle;
 
-	private bool range;
+	public int minRange, maxRange;
 
 	public abstract void launch(CellScript cell);
 
