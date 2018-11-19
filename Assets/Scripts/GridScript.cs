@@ -26,6 +26,7 @@ public class GridScript : MonoBehaviour {
 	void Start () {
 		globalOffsetX = -transform.position.x + (nbX*(sizeX+offsetX))/2 - (sizeX+offsetX)/2;
 		globalOffsetY = transform.position.y + (nbY*(sizeY+offsetY))/2 - (sizeY+offsetY)/2;
+		CellManager.setGridSize(nbX,nbY);
 
 		foreach(Transform child in transform)
 		{

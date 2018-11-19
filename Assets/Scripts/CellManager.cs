@@ -6,30 +6,112 @@ public enum ResetMode {
 	soft, normal, hard
 }
 
-public class CellManager : MonoBehaviour {
+public enum RangeType {
+	movement, spell
+}
 
-	[HideInInspector]
+public class CellManager {
+
 	public static List<CellScript> grid = new List<CellScript>();
+
+	private static int nbX, nbY;
 
 	public static void ShowMoveRange(CellScript center)
 	{
-		// Djiskstra here
+		Dijkstra(center, ((CharacterScript) center.target).moveRange, 0, RangeType.movement);
+	}
 
-		// FOR NOW just show all cells around him
-		int moveRange = center.target.GetComponent<CharacterScript>().moveRange;
-		foreach(CellScript cell in grid)
-		{
-			if(center.Distance(cell) <= moveRange)
+	private static void Dijkstra (CellScript center, int max, int min, RangeType type = RangeType.movement)
+	{
+		List<CellScript> current = new List<CellScript>(), next = new List<CellScript>();
+		int distance = 0, i = 0;
+
+		// Reset cells before doing Djikstra
+		CellManager.ResetGrid();
+
+		// Add all cells around the center
+		current = AddToList(current, center);
+
+		// While we have cells to check and distance < to moveRange
+		while(distance < max && i != current.Count) {
+			#region movement
+			if(type == RangeType.movement)
 			{
-				cell.isInMoveRange = true;
+				// If cell hasn't been treated yet and is empty
+				if (!current[i].isInMoveRange && current[i].target == null)
+				{
+					// We add its neighboors to the list and put it in MoveRange
+					current[i].isInMoveRange = true;
+					next = AddToList(next, current[i]);
+				}
+			}
+			#endregion
+			#region spell
+			else if (type == RangeType.spell)
+			{
+				// If cell hasn't been treated yet and is empty
+				if (!current[i].isInSpellRange && current[i].target == null)
+				{
+					// We add its neighboors to the list and put it in MoveRange
+					if(distance >= min)
+						current[i].isInSpellRange = true;
+					next = AddToList(next, current[i]);
+				}
+			}
+			#endregion
+			#region both
+			// Then we take next cell in the list
+			i++;
+			// If "current" is done, copy next into current and clear next 
+			if(i == current.Count)
+			{
+				distance++;
+				i = 0;
+				current = new List<CellScript>(next);
+				next.Clear();
+			}
+			#endregion
+		}
+	}
+
+	private static List<CellScript> AddToList(List<CellScript> cells, CellScript center) {
+		
+		int next, max = nbX*nbY;
+		for (int i = -1 ; i < 2 ; i += 2)
+		{
+			// TODO : duplicate code.
+
+			// Index in the list = x + y*nbX;
+			next = GridIndex(center.x + i, center.y);
+			// If it exist (index < max) and is not already in the list
+			if(next < max && next > -1 && !cells.Contains(grid[next]))
+			{
+				// Add it.
+				cells.Add(grid[next]);
+			}
+
+			// Index in the list = x + y*nbX;
+			next = GridIndex(center.x, center.y + i);
+			// If it exist (index < max) and is not already in the list
+			if(next < max && next > -1 && !cells.Contains(grid[next]))
+			{
+				// Add it.
+				cells.Add(grid[next]);
 			}
 		}
+		return cells;
+	}
+
+	private static int GridIndex (int x, int y)
+	{
+		if(x == nbX || x == -1) { return -1; }
+		return x + y*nbX;
 	}
 
 	// Resets isInMoveRange, isInSpellRange and isInPath
 	// soft = Do not reset isInMoveRange and isInSpellRange
 	// hard = Also reset Selected
-	public static void ResetGrid(ResetMode mode)
+	public static void ResetGrid(ResetMode mode = ResetMode.normal)
 	{
 		// if "soft", reset only isInPath
 		// if "hard", reset selected too
@@ -48,13 +130,73 @@ public class CellManager : MonoBehaviour {
 
 	public static void ShowSpellRange(CellScript center, SpellScript spell)
 	{
-		// Djistra here
+		Dijkstra(center, spell.maxRange, spell.minRange, RangeType.spell);
 	}
 
 	// Center is assumed to be PlayerScript.selectedCell
 	public static void ShowPath(CellScript target)
 	{
-		// A* here
+		// Cells are set in moveRange already, so we can use that
+		CellScript current = PlayerScript.instance.selectedCell;
+		List<CellScript> path = new List<CellScript>(), wrong = new List<CellScript>();
+		int next;
+
+		path.Add(current);
+
+		// TODO : GROSSE DUPLICATION DE CODE, franchement tu peut faire mieux...
+
+		while (current != target)
+		{
+			if (target.y > current.y)
+			{
+				next = GridIndex(current.x, current.y+1);
+				if (next != -1 && next < grid.Count && grid[next].isInMoveRange && !wrong.Contains(grid[next]))
+				{
+					current = grid[next];
+                    current.isInPath = true;
+					path.Add(current);
+                    continue;
+				}
+			}	// We use "continue;" because we can't use "else if", as if "next" isn't good we need to check other cells
+            if (target.y < current.y)
+            {
+                next = GridIndex(current.x, current.y-1);
+				if (next != -1 && next < grid.Count && grid[next].isInMoveRange && !wrong.Contains(grid[next]))
+				{
+					current = grid[next];
+                    current.isInPath = true;
+					path.Add(current);
+                    continue;
+				}
+            } 
+			if (target.x > current.x)
+			{
+				next = GridIndex(current.x+1, current.y);
+				if (next != -1 && next < grid.Count && grid[next].isInMoveRange && !wrong.Contains(grid[next]))
+				{
+					current = grid[next];
+                    current.isInPath = true;
+					path.Add(current);
+                    continue;
+				}
+			}	// We use "continue;" because we can't use "else if", as if "next" isn't good we need to check other cells
+            if (target.x < current.x)
+            {
+                next = GridIndex(current.x-1, current.y);
+				if (next != -1 && next < grid.Count && grid[next].isInMoveRange && !wrong.Contains(grid[next]))
+				{
+					current = grid[next];
+                    current.isInPath = true;
+					path.Add(current);
+                    continue;
+				}
+            } 
+			// If none was find, add current to wrong and get back to last cell
+			wrong.Add(current);
+			current.isInPath = false;
+    		path.Remove(current);
+    		current = path[path.Count-1];
+		}
 	}
 
 	public static void AddCell(CellScript cell, int x, int y)
@@ -62,5 +204,10 @@ public class CellManager : MonoBehaviour {
 		cell.x = x;
 		cell.y = y;
 		grid.Add(cell);
+	}
+
+	public static void setGridSize(int x, int y)
+	{
+		nbX = x; nbY = y;
 	}
 }

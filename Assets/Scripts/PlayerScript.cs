@@ -7,7 +7,7 @@ public class PlayerScript : MonoBehaviour {
 	[HideInInspector]
 	public static PlayerScript instance;
 
-	private CellScript selectedCell;
+	public CellScript selectedCell;
 	private SpellScript activeSpell;
 
 	// Use this for initialization
@@ -44,7 +44,7 @@ public class PlayerScript : MonoBehaviour {
 		// when "unselect" => set character to "done"
 
 		
-		if(selectedCell == null && cell.target != null && cell.target.canPlay)
+		if(selectedCell == null && cell.target != null && cell.target.GetTypeOfTarget() == Type.ally)
 		{
 			Select(cell);
 		} else if (selectedCell != null)

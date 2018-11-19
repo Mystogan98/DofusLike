@@ -9,13 +9,14 @@ public class CharacterScript : TargetScript {
 	[Space(20)]
 
 	// TODO : See if you can hide "obstacle"
-	public new Type type;
+	public Type typeOfCharacter = Type.ally;
 	public int moveRange = 3;
 
 	private SpellScript spell; 	// I don't know how many yet
 	private CellScript parent;
 
 	private void Start() {
+		type = typeOfCharacter;
 		UpdateParent();
 	}
 
