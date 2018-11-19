@@ -6,6 +6,7 @@ using UnityEngine;
 public class CellScript : MonoBehaviour {
 
 	public TargetScript target;
+	[HideInInspector]
 	public int x, y;
 
 	private bool _selected, _over, _isInPath, _isInMoveRange, _isInSpellRange, hasChanged;
@@ -21,7 +22,8 @@ public class CellScript : MonoBehaviour {
 		renderer = GetComponent<SpriteRenderer>();
 		try{
 			if(target == null)
-				target = transform.GetChild(0).gameObject.GetComponent<TargetScript>();
+				target = GetComponentInChildren<TargetScript>();
+				//target = transform.GetChild(0).gameObject.GetComponent<TargetScript>();
 		} catch {
 			// Ignore the error as it's just quality of life for me, not a need for the game
 		}
@@ -38,11 +40,11 @@ public class CellScript : MonoBehaviour {
 			else if (isInPath)
 				renderer.color = Color.green;
 			else if (isInMoveRange)
-				renderer.color = Color.green;  //new Color(120,255,120);
+				renderer.color = new Color32(120,255,120,255);
 			else if (isInSpellRange)
-				renderer.color = new Color(255,120,120);
+				renderer.color = new Color32(255,120,120,255);
 			else
-				renderer.color = Color.white;
+				renderer.color = Color.clear;
 			hasChanged = false;
 		}
 	}

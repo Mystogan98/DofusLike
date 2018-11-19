@@ -49,6 +49,7 @@ public class CellManager : MonoBehaviour {
 	public static void ShowSpellRange(CellScript center, SpellScript spell)
 	{
 		// Djistra here
+		// Nope, we need a vision system.
 	}
 
 	// Center is assumed to be PlayerScript.selectedCell
@@ -64,3 +65,19 @@ public class CellManager : MonoBehaviour {
 		grid.Add(cell);
 	}
 }
+
+
+// DISJKTRA
+// Stack case retenus
+// liste case non utile
+// case de depart
+// case d'arrivé
+// case = {x + y} ; valeur = x+y ; distance = |valeur_depart - valeur_arrivé|
+
+// On part de la case de départ en direction de la case d'arrivé
+// on met la première case dans la stack, puis on prend la case suivante
+// Si la case ne mene a rien, on reviens en arrière dans la stack et on met cette case dans la liste
+// si case pas dans la liste, alors on met dans la stack et on continue
+
+// si distance > portée FALSE
+// TRUE

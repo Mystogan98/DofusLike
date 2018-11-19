@@ -12,6 +12,7 @@ public class CharacterScript : TargetScript {
 	public new Type type;
 	public int moveRange = 3;
 
+	private new bool _canPlay = true;
 	private SpellScript spell; 	// I don't know how many yet
 	private CellScript parent;
 

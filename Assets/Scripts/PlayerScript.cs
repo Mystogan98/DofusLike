@@ -87,10 +87,13 @@ public class PlayerScript : MonoBehaviour {
 					activeSpell.launch(cell);
 					Unselect(true);
 				}
+			} else if (cell.target.GetTypeOfTarget() == Type.water) {
+				Unselect(false);
 			}
 		}
 	}
 
+	// TODO : CanPlay = false here or in Character ?
 	private void Unselect(bool played){
 		// if (played && selectedCell.target != null)
 		// 	selectedCell.target.canPlay = false;
@@ -116,21 +119,3 @@ public class PlayerScript : MonoBehaviour {
 		CellManager.ShowSpellRange(selectedCell,spell);
 	}
 }
-
-
-
-
-// DISJKTRA
-// Stack case retenus
-// liste case non utile
-// case de depart
-// case d'arrivé
-// case = {x + y} ; valeur = x+y ; distance = |valeur_depart - valeur_arrivé|
-
-// On part de la case de départ en direction de la case d'arrivé
-// on met la première case dans la stack, puis on prend la case suivante
-// Si la case ne mene a rien, on reviens en arrière dans la stack et on met cette case dans la liste
-// si case pas dans la liste, alors on met dans la stack et on continue
-
-// si distance > portée FALSE
-// TRUE

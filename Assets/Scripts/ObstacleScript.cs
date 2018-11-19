@@ -8,9 +8,5 @@ public class ObstacleScript : TargetScript {
 	void Start () {
 		type = Type.obstacle;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
 }
