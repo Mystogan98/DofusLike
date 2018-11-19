@@ -34,15 +34,15 @@ public class CellScript : MonoBehaviour {
 		if(hasChanged)
 		{
 			if(selected)
-				renderer.color = Color.red;
+				renderer.color = new Color32(255,0,0,100);
 			else if (isInPath)
-				renderer.color = Color.green;
+				renderer.color = new Color32(0,255,0,100);
 			else if (over)
-				renderer.color = Color.blue;
+				renderer.color = new Color32(0,0,255,100);
 			else if (isInMoveRange)
-				renderer.color = new Color32(180,255,180,255);
+				renderer.color = new Color32(180,255,180,100);
 			else if (isInSpellRange)
-				renderer.color = new Color32(255,120,120,255);
+				renderer.color = new Color32(255,180,180,100);
 			else
 				renderer.color = Color.clear;
 			hasChanged = false;
