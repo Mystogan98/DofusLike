@@ -21,6 +21,33 @@ public class CellManager {
 		Dijkstra(center, ((CharacterScript) center.target).moveRange, 0, RangeType.movement);
 	}
 
+	public static void ShowSpellRange(CellScript center, SpellScript spell)
+	{
+		// Dijkstra here
+		// Nope, we need a vision system.
+		Dijkstra(center, spell.maxRange, spell.minRange, RangeType.spell);
+	}
+
+	// Resets isInMoveRange, isInSpellRange and isInPath
+	// soft = Do not reset isInMoveRange and isInSpellRange
+	// hard = Also reset Selected
+	public static void ResetGrid(ResetMode mode = ResetMode.normal)
+	{
+		// if "soft", reset only isInPath
+		// if "hard", reset selected too
+		foreach(CellScript cell in grid)
+		{
+			cell.isInPath = false;
+			if(mode != ResetMode.soft)
+			{
+				cell.isInMoveRange = false;
+				cell.isInSpellRange = false;
+			} else if (mode == ResetMode.hard) {
+				cell.selected = false;
+			}
+		}
+	}
+
 	private static void Dijkstra (CellScript center, int max, int min, RangeType type = RangeType.movement)
 	{
 		List<CellScript> current = new List<CellScript>(), next = new List<CellScript>();
@@ -79,8 +106,6 @@ public class CellManager {
 		int next, max = nbX*nbY;
 		for (int i = -1 ; i < 2 ; i += 2)
 		{
-			// TODO : duplicate code.
-
 			// Index in the list = x + y*nbX;
 			next = GridIndex(center.x + i, center.y);
 			// If it exist (index < max) and is not already in the list
@@ -108,33 +133,6 @@ public class CellManager {
 		return x + y*nbX;
 	}
 
-	// Resets isInMoveRange, isInSpellRange and isInPath
-	// soft = Do not reset isInMoveRange and isInSpellRange
-	// hard = Also reset Selected
-	public static void ResetGrid(ResetMode mode = ResetMode.normal)
-	{
-		// if "soft", reset only isInPath
-		// if "hard", reset selected too
-		foreach(CellScript cell in grid)
-		{
-			cell.isInPath = false;
-			if(mode != ResetMode.soft)
-			{
-				cell.isInMoveRange = false;
-				cell.isInSpellRange = false;
-			} else if (mode == ResetMode.hard) {
-				cell.selected = false;
-			}
-		}
-	}
-
-	public static void ShowSpellRange(CellScript center, SpellScript spell)
-	{
-		// Dijkstra here
-		// Nope, we need a vision system.
-		Dijkstra(center, spell.maxRange, spell.minRange, RangeType.spell);
-	}
-
 	// Center is assumed to be PlayerScript.selectedCell
 	public static void ShowPath(CellScript target)
 	{
@@ -145,52 +143,43 @@ public class CellManager {
 
 		path.Add(current);
 
-		// TODO : GROSSE DUPLICATION DE CODE, franchement tu peut faire mieux...
-
 		while (current != target)
 		{
 			if (target.y > current.y)
 			{
 				next = GridIndex(current.x, current.y+1);
-				if (next != -1 && next < grid.Count && grid[next].isInMoveRange && !wrong.Contains(grid[next]))
+				// Check is grid[next] is valid, if not, returns null.
+				if (CheckPath(next, wrong, path) != null)
 				{
 					current = grid[next];
-                    current.isInPath = true;
-					path.Add(current);
-                    continue;
-				}
+					continue;
+				}				
 			}	// We use "continue;" because we can't use "else if", as if "next" isn't good we need to check other cells
             if (target.y < current.y)
             {
                 next = GridIndex(current.x, current.y-1);
-				if (next != -1 && next < grid.Count && grid[next].isInMoveRange && !wrong.Contains(grid[next]))
+				if (CheckPath(next, wrong, path) != null)
 				{
 					current = grid[next];
-                    current.isInPath = true;
-					path.Add(current);
-                    continue;
+					continue;
 				}
             } 
 			if (target.x > current.x)
 			{
 				next = GridIndex(current.x+1, current.y);
-				if (next != -1 && next < grid.Count && grid[next].isInMoveRange && !wrong.Contains(grid[next]))
+				if (CheckPath(next, wrong, path) != null)
 				{
 					current = grid[next];
-                    current.isInPath = true;
-					path.Add(current);
-                    continue;
+					continue;
 				}
-			}	// We use "continue;" because we can't use "else if", as if "next" isn't good we need to check other cells
+			}
             if (target.x < current.x)
             {
                 next = GridIndex(current.x-1, current.y);
-				if (next != -1 && next < grid.Count && grid[next].isInMoveRange && !wrong.Contains(grid[next]))
+				if (CheckPath(next, wrong, path) != null)
 				{
 					current = grid[next];
-                    current.isInPath = true;
-					path.Add(current);
-                    continue;
+					continue;
 				}
             } 
 			// If none was find, add current to wrong and get back to last cell
@@ -199,6 +188,17 @@ public class CellManager {
     		path.Remove(current);
     		current = path[path.Count-1];
 		}
+	}
+
+	private static CellScript CheckPath(int next, List<CellScript> wrong, List<CellScript> path)
+	{
+		if (next != -1 && next < grid.Count && grid[next].isInMoveRange && !wrong.Contains(grid[next]))
+		{
+			grid[next].isInPath = true;
+			path.Add(grid[next]);
+			return grid[next];
+		}
+		return null;
 	}
 
 	public static void AddCell(CellScript cell, int x, int y)

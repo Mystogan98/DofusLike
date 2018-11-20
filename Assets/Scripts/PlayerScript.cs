@@ -7,8 +7,10 @@ public class PlayerScript : MonoBehaviour {
 	[HideInInspector]
 	public static PlayerScript instance;
 
-	public CellScript selectedCell;
+	private CellScript _selectedCell;
 	private SpellScript activeSpell;
+
+	public CellScript selectedCell { get { return _selectedCell; } private set { _selectedCell = value; }}
 
 	// Use this for initialization
 	void Start () {
