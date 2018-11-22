@@ -3200,7 +3200,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alwaysPlayable: 1
   typeOfCharacter: 2
-  moveRange: 3
+  maxMoveRange: 3
+  minMoveRange: 0
 --- !u!1001 &655124674
 Prefab:
   m_ObjectHideFlags: 0
@@ -8717,6 +8718,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1818637466}
   - component: {fileID: 1818637465}
+  - component: {fileID: 1818637467}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -8735,7 +8737,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a4ac66a5f7bb648a8a5e92c6247751, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedCell: {fileID: 0}
 --- !u!4 &1818637466
 Transform:
   m_ObjectHideFlags: 0
@@ -8749,6 +8750,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1818637467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1818637464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80e5387c01aeb39449fef96e304bca96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onEmpty: 0
+  onAlly: 0
+  onEnnemy: 0
+  onObstacle: 0
+  onWater: 0
+  needVision: 1
+  minRange: 0
+  maxRange: 0
 --- !u!4 &1819804186 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4150225634758724, guid: 7eb9cd0143aa1024ea5a01b5524b621f,

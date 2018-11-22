@@ -6,10 +6,6 @@ public enum ResetMode {
 	soft, normal, hard
 }
 
-public enum RangeType {
-	movement, spell
-}
-
 public class CellManager {
 
 	public static List<CellScript> grid = new List<CellScript>();
@@ -18,14 +14,48 @@ public class CellManager {
 
 	public static void ShowMoveRange(CellScript center)
 	{
-		Dijkstra(center, ((CharacterScript) center.target).moveRange, 0, RangeType.movement);
+		Dijkstra(center, ((CharacterScript) center.target).maxMoveRange, ((CharacterScript) center.target).minMoveRange);
 	}
 
 	public static void ShowSpellRange(CellScript center, SpellScript spell)
 	{
-		// Dijkstra here
-		// Nope, we need a vision system.
-		Dijkstra(center, spell.maxRange, spell.minRange, RangeType.spell);
+		// Foreach to set cells to "inSpellRange"
+		// If obstacle, ally, ext.. check is spell possible
+		// If spell have vision,
+		// Then bresenham to check if you can see it
+		List<CellScript> cells = new List<CellScript>();
+		int distance;
+
+		foreach (CellScript cell in grid)
+		{
+			distance = center.Distance(cell);
+			if(distance <= spell.minRange && distance >= spell.maxRange)
+			{	
+				// Conditions are inversed so we can factorize the code
+				if(cell.target == null && !spell.onEmpty)
+					continue;
+				switch(cell.target.GetTypeOfTarget())
+				{
+					case Type.ally : if(!spell.onAlly) { continue; } break;
+					case Type.water : if(!spell.onWater) { continue; } break;
+					case Type.ennemy : if(!spell.onEnnemy) { continue; } break;
+					case Type.obstacle : if(!spell.onObstacle) { continue; } break;
+				}
+				cell.isInSpellRange = true;
+				cells.Add(cell);
+			}
+		}
+		if(spell.needVision)
+			BresenhamLine(center,cells);
+	}
+
+	private static void BresenhamLine(CellScript center, List<CellScript> cells)
+	{
+		// For all cell in cells
+		// if cells.isinspellrange
+		// draw a line
+			// if it encounters a obstacle, set all following cells to false
+		// end
 	}
 
 	// Resets isInMoveRange, isInSpellRange and isInPath
@@ -48,7 +78,7 @@ public class CellManager {
 		}
 	}
 
-	private static void Dijkstra (CellScript center, int max, int min, RangeType type = RangeType.movement)
+	private static void Dijkstra (CellScript center, int max, int min)
 	{
 		List<CellScript> current = new List<CellScript>(), next = new List<CellScript>();
 		int distance = 0, i = 0;
@@ -61,32 +91,14 @@ public class CellManager {
 
 		// While we have cells to check and distance < to moveRange
 		while(distance < max && i != current.Count) {
-			#region movement
-			if(type == RangeType.movement)
+			// If cell hasn't been treated yet and is empty
+			if (!current[i].isInMoveRange && current[i].target == null)
 			{
-				// If cell hasn't been treated yet and is empty
-				if (!current[i].isInMoveRange && current[i].target == null)
-				{
-					// We add its neighboors to the list and put it in MoveRange
+				// We add its neighboors to the list and put it in MoveRange
+				if(distance >= min)
 					current[i].isInMoveRange = true;
-					next = AddToList(next, current[i]);
-				}
+				next = AddToList(next, current[i]);
 			}
-			#endregion
-			#region spell
-			else if (type == RangeType.spell)
-			{
-				// If cell hasn't been treated yet and is empty
-				if (!current[i].isInSpellRange && current[i].target == null)
-				{
-					// We add its neighboors to the list and put it in MoveRange
-					if(distance >= min)
-						current[i].isInSpellRange = true;
-					next = AddToList(next, current[i]);
-				}
-			}
-			#endregion
-			#region both
 			// Then we take next cell in the list
 			i++;
 			// If "current" is done, copy next into current and clear next 
@@ -97,7 +109,6 @@ public class CellManager {
 				current = new List<CellScript>(next);
 				next.Clear();
 			}
-			#endregion
 		}
 	}
 

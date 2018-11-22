@@ -51,6 +51,7 @@ public class PlayerScript : MonoBehaviour {
 			Select(cell);
 		} else if (selectedCell != null)
 		{
+			int distance = selectedCell.Distance(cell);
 			if(cell.target == null)
 			{
 				CharacterScript target = (CharacterScript) selectedCell.target;
@@ -58,18 +59,18 @@ public class PlayerScript : MonoBehaviour {
 				{
 					target.Move(cell);
 					Unselect(true);
-				} else if (activeSpell != null && activeSpell.onEmpty && activeSpell.IsInRange(cell))
+				} else if (activeSpell != null && activeSpell.onEmpty && distance <= activeSpell.maxRange && distance >= activeSpell.minRange)
 				{
-					activeSpell.launch(cell);
+					activeSpell.Launch(cell);
 					Unselect(true);
 				} else {
 					Unselect(false);
 				}
 			} else if (cell.target.GetTypeOfTarget() == Type.ally)
 			{
-				if (activeSpell != null && activeSpell.onAlly && activeSpell.IsInRange(cell))
+				if (activeSpell != null && activeSpell.onAlly && distance <= activeSpell.maxRange && distance >= activeSpell.minRange)
 				{
-					activeSpell.launch(cell);
+					activeSpell.Launch(cell);
 					Unselect(true);
 				} else {
 					Unselect(false);
@@ -77,16 +78,16 @@ public class PlayerScript : MonoBehaviour {
 				}
 			} else if (cell.target.GetTypeOfTarget() == Type.ennemy)
 			{
-				if (activeSpell != null && activeSpell.onEnnemy && activeSpell.IsInRange(cell))
+				if (activeSpell != null && activeSpell.onEnnemy && distance <= activeSpell.maxRange && distance >= activeSpell.minRange)
 				{
-					activeSpell.launch(cell);
+					activeSpell.Launch(cell);
 					Unselect(true);
 				}
 			} else if (cell.target.GetTypeOfTarget() == Type.obstacle)
 			{
-				if (activeSpell != null && activeSpell.onObstacle && activeSpell.IsInRange(cell))
+				if (activeSpell != null && activeSpell.onObstacle && distance <= activeSpell.maxRange && distance >= activeSpell.minRange)
 				{
-					activeSpell.launch(cell);
+					activeSpell.Launch(cell);
 					Unselect(true);
 				}
 			} else if (cell.target.GetTypeOfTarget() == Type.water) {

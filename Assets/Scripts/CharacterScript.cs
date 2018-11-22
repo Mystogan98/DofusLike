@@ -10,7 +10,7 @@ public class CharacterScript : TargetScript {
 
 	// TODO : See if you can hide "obstacle"
 	public Type typeOfCharacter = Type.ally;
-	public int moveRange = 3;
+	public int maxMoveRange = 3, minMoveRange = 0;
 
 	private SpellScript spell; 	// I don't know how many yet
 	private CellScript parent;
