@@ -65,7 +65,7 @@ public class GridScript : MonoBehaviour {
 }
 
 
- [CustomEditor(typeof(GridScript))]
+/* [CustomEditor(typeof(GridScript))]
  public class GridScriptEditor : Editor {
     
     override public void OnInspectorGUI () {
@@ -79,4 +79,4 @@ public class GridScript : MonoBehaviour {
 				child.gameObject.SetActive(true);
         }
     }
-}
+}*/

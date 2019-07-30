@@ -19,8 +19,8 @@ class MyWindow : EditorWindow {
 
 		if(target != null)
 		{
-			SpellScript spell = ;
-			Debug.Log(spell + " " + target);
+			//SpellScript spell = ;
+			//Debug.Log(spell + " " + target);
 			//minRange = spell.minRange;
 			Debug.Log(target.GetType());
 		}
